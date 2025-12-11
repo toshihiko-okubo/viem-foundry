@@ -1,0 +1,134 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  forge-test:
+    name: Forge Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Install Foundry dependencies
+        run: |
+          forge install foundry-rs/forge-std@v1.9.5
+          forge install risc0/risc0-ethereum@aggregation-v0.9.0
+
+      - name: Run forge build
+        run: forge build --sizes
+
+      - name: Gen ABI
+        run: npm run abi
+
+      - name: Check contract size limit (25KB)
+        run: |
+          MAX_SIZE=25600  # 25KB in bytes
+          FAILED=0
+
+          # Install jq if not available
+          if ! command -v jq &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y jq
+          fi
+
+          echo "Checking contract sizes..."
+
+          # Find all contract JSON files and check their bytecode size
+          for contract_file in $(find out -name "*.json" -type f); do
+            # Skip metadata files and non-contract files
+            if [[ $contract_file == *".metadata.json" ]] || [[ $contract_file == *".dbg.json" ]]; then
+              continue
+            fi
+
+            # Extract bytecode and calculate size
+            BYTECODE=$(jq -r '.bytecode.object // .bytecode // empty' "$contract_file" 2>/dev/null)
+
+            if [ -n "$BYTECODE" ] && [ "$BYTECODE" != "null" ] && [ "$BYTECODE" != "0x" ]; then
+              # Remove 0x prefix and calculate size (each byte is 2 hex characters)
+              SIZE=$((${#BYTECODE} / 2 - 1))
+              CONTRACT_NAME=$(basename "$contract_file" .json)
+
+              if [ $SIZE -gt $MAX_SIZE ]; then
+                echo "❌ $CONTRACT_NAME: $SIZE bytes (exceeds $MAX_SIZE bytes limit)"
+                FAILED=1
+              else
+                echo "✅ $CONTRACT_NAME: $SIZE bytes"
+              fi
+            fi
+          done
+
+          if [ $FAILED -eq 1 ]; then
+            echo ""
+            echo "❌ Some contracts exceed the 25KB size limit!"
+            exit 1
+          else
+            echo ""
+            echo "✅ All contracts are within the 25KB size limit"
+          fi
+
+      - name: Run forge tests
+        run: forge test -vvv
+
+#  typescript-test:
+#    name: TypeScript Test
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Node.js
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: '24'
+#          cache: 'npm'
+#
+#      - name: Install Node.js dependencies
+#        run: npm ci
+#
+#      - name: Run TypeScript tests
+#        run: npm test
+#
+#      - name: Check TypeScript build
+#        run: npm run build
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Check Prettier formatting
+        run: npm run format:check

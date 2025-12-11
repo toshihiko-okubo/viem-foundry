@@ -1,0 +1,6 @@
+[submodule "node_modules/@datachainlab/lcp-solidity/contracts/risc0-ethereum"]
+	path = node_modules/@datachainlab/lcp-solidity/contracts/risc0-ethereum
+	url = https://github.com/risc0/risc0-ethereum
+[submodule "node_modules/@datachainlab/lcp-solidity/contracts/forge-std"]
+	path = node_modules/@datachainlab/lcp-solidity/contracts/forge-std
+	url = https://github.com/foundry-rs/forge-std
