@@ -1,3 +1,6 @@
+# npm pack
+viem-foundry-*.tgz
+
 # Logs
 logs
 *.log
@@ -38,5 +41,13 @@ node_modules/
 *.tgz
 
 # forge build output
+abi
 cache_forge
 out
+lib
+
+# TypeScript build output (includes abi and contracts)
+dist
+
+# claude mcp
+.serena/

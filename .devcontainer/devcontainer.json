@@ -1,0 +1,32 @@
+{
+  "name": "node24+foundry-nonroot",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/.config/git/ignore,target=/home/node/.config/git/ignore,type=bind,consistency=cached"
+  ],
+  "remoteUser": "node",
+  "containerUser": "node",
+  "postCreateCommand": {
+    "npm_install": "npm install",
+    "git_submodule_install": "git submodule update --init --recursive",
+    "git_ignore_global": "git config --global core.excludesFile /home/node/.config/git/ignore"
+  },
+  "customizations": {
+    "jetbrains": {
+      "plugins": ["NodeJS", "intellij.prettierJS", "me.serce.solidity"],
+      "settings": {
+        "com.intellij:app:EditorSettings.is_ensure_newline_at_eof": true,
+        "com.intellij:app:EditorSettings.remove_trailing_blank_lines": true,
+        "org.jetbrains.plugins.go:app:Go.indentOnEnterInRawStrings": true,
+        "org.jetbrains.plugins.go:app:Go.renameCorrespondingTestOrProductionFile": "yes",
+        "org.jetbrains.plugins.go:app:Go.renameDirectoryOnPackageRenaming": "yes",
+        "org.jetbrains.plugins.go:app:Go.renamePackageOnDirectoryRenaming": "yes",
+        "org.jetbrains.plugins.go:app:Go.showDocumentationInParameterPopup": true,
+        "com.intellij:app:XmlEditorOptions.showCssInlineColorPreview": true,
+        "com.intellij:app:HttpConfigurable.use_proxy_pac": true
+      }
+    }
+  }
+}

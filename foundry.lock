@@ -1,0 +1,14 @@
+{
+  "forge-libs/forge-std": {
+    "tag": {
+      "name": "v1.9.5",
+      "rev": "b93cf4bc34ff214c099dc970b153f85ade8c9f66"
+    }
+  },
+  "forge-libs/risc0-ethereum": {
+    "tag": {
+      "name": "aggregation-v0.9.0",
+      "rev": "365e7b2db4f620fa256580c27558d2623362b9ae"
+    }
+  }
+}

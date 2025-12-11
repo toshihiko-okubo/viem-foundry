@@ -1,0 +1,74 @@
+# ref: https://getfoundry.sh/config/reference/default-config/
+
+[profile.default]
+src = "contracts"
+out = "out"
+test = "tests"
+cache_path = "cache_forge"
+gas_reports = ['*']
+
+libs = [
+    "forge-libs"
+]
+
+# Solidity compiler settings
+solc_version = "0.8.28"
+evm_version = "cancun"
+optimizer = true
+optimizer_runs = 9_999_999
+via_ir = true
+
+# Additional settings
+auto_detect_solc = false
+fs_permissions = [{ access = "read", path = "./"}]
+
+## https://docs.openzeppelin.com/upgrades-plugins/foundry/foundry-upgrades#before-running
+ffi = true
+ast = true
+build_info = true
+extra_output = ["storageLayout"]
+
+# Remappings for dependencies
+remappings = [
+    "@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/",
+    "@openzeppelin/contracts-upgradeable/=node_modules/@openzeppelin/contracts-upgradeable/",
+    "openzeppelin/contracts/=node_modules/@openzeppelin//contracts/",
+    "@hyperledger-labs/yui-ibc-solidity/=node_modules/@hyperledger-labs/yui-ibc-solidity/",
+    "@datachainlab/lcp-solidity/=node_modules/@datachainlab/lcp-solidity/",
+    "yui-ibc-solidity/=node_modules/@hyperledger-labs/yui-ibc-solidity/",
+    "lcp-solidity/=node_modules/@datachainlab/lcp-solidity/"
+]
+
+additional_compiler_profiles = [
+    { name = "default", optimizer_runs = 9_999_999 },
+    { name = "runs_800", optimizer_runs = 800 }
+]
+
+compilation_restrictions = [
+    { paths = "node_modules/@datachainlab/lcp-solidity/contracts/toki/TokiLCPClientZKDCAP.sol", optimizer_runs = 800 },
+]
+
+# Formatting
+[fmt]
+line_length = 120
+tab_width = 4
+bracket_spacing = true
+int_types = "long"
+multiline_func_header = "all"
+quote_style = "double"
+number_underscore = "thousands"
+
+[lint]
+# ... rest of lint config ...
+exclude_lints = ["unused-import"]
+
+# RPC endpoints (add your endpoints here)
+[rpc_endpoints]
+# mainnet = "${MAINNET_RPC_URL}"
+# sepolia = "${SEPOLIA_RPC_URL}"
+# local = "http://localhost:8545"
+
+# Etherscan API keys for contract verification
+[etherscan]
+# mainnet = { key = "${ETHERSCAN_API_KEY}" }
+# sepolia = { key = "${ETHERSCAN_API_KEY}" }

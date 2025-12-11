@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "target": "ES2024",
+    "lib": ["ES2022"],
+
+    // Module options
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+
+    // Strict checks
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    // Skip lib check for faster builds
+    "skipLibCheck": true,
+
+    // Source maps for debugging
+    "sourceMap": true,
+
+    // Type declarations
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "out",
+    "cache_forge",
+    "lib",
+    "tests",
+    "scripts",
+    "examples",
+    "internal"
+  ]
+}
